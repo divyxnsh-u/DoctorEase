@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Doctor Booking</string>
+    <string name="hospital_name">XYZ Hospital</string>
+    <string name="choose_doctor">Choose a Doctor</string>
+    <string name="book_with">Book with %1$s</string>
+    <string name="confirm_appointment">Confirm Appointment</string>
+</resources>
