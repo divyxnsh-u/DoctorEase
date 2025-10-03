@@ -53,7 +53,7 @@ class BookingActivity : AppCompatActivity() {
             tpd.show()
         }
 
-        // Confirm Booking with validation
+
         btnConfirmBooking.setOnClickListener {
             val name = etPatientName.text.toString().trim()
             val phone = etPatientPhone.text.toString().trim()

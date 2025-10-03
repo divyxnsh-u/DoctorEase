@@ -26,7 +26,7 @@ class SignupActivity : AppCompatActivity() {
                 Toast.makeText(this, "Enter a valid Gmail address (example@gmail.com)", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Signup Successful!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, BookingActivity::class.java)
+                val intent = Intent(this, DoctorListActivity::class.java)
                 startActivity(intent)
                 finish()
             }
