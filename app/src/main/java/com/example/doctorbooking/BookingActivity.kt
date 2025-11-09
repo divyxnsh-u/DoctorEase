@@ -27,7 +27,6 @@ class BookingActivity : AppCompatActivity() {
 
         tvBookingInfo.text = "Booking appointment with:\n$doctorName\n($doctorSpecialization)"
 
-        // Date Picker
         btnSelectDate.setOnClickListener {
             val c = Calendar.getInstance()
             val dpd = DatePickerDialog(
@@ -40,7 +39,6 @@ class BookingActivity : AppCompatActivity() {
             dpd.show()
         }
 
-        // Time Picker
         btnSelectTime.setOnClickListener {
             val c = Calendar.getInstance()
             val tpd = TimePickerDialog(
@@ -60,7 +58,13 @@ class BookingActivity : AppCompatActivity() {
 
             if (name.isEmpty() || phone.isEmpty()) {
                 Toast.makeText(this, "Please enter name and phone number!", Toast.LENGTH_SHORT).show()
-            } else {
+            }
+            if (phone.length != 10) {
+                Toast.makeText(this, "Please enter a valid 10-digit phone number!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            else {
                 tvBookingInfo.text = "✅ Appointment confirmed with $doctorName!\nPatient: $name\nPhone: $phone"
             }
         }

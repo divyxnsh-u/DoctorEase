@@ -13,6 +13,17 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+
+        val prefs = getSharedPreferences("DoctorAppPrefs", MODE_PRIVATE)
+        val isLoggedIn = prefs.getBoolean("isLoggedIn", false)
+
+        if (isLoggedIn) {
+            startActivity(Intent(this, DoctorListActivity::class.java))
+            finish()
+            return
+        }
+
+
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
@@ -27,7 +38,11 @@ class LoginActivity : AppCompatActivity() {
             } else if (!isValidGmail(email)) {
                 Toast.makeText(this, "Enter a valid Gmail address (example@gmail.com)", Toast.LENGTH_SHORT).show()
             } else {
+
+                prefs.edit().putBoolean("isLoggedIn", true).apply()
+
                 Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
+
                 val intent = Intent(this, DoctorListActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -39,7 +54,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
 
     private fun isValidGmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() && email.endsWith("@gmail.com")
