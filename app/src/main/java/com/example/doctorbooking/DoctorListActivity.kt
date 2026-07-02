@@ -161,7 +161,7 @@ class DoctorListActivity : AppCompatActivity() {
             Toast.LENGTH_SHORT
         ).show()
 
-        val intent = Intent(this, DoctorDetailsActivity::class.java)
+        Intent(this, LoginActivity::class.java)
         intent.flags =
             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 

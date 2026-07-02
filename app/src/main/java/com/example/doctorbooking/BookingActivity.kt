@@ -32,6 +32,7 @@ class BookingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityBookingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.btnConfirm.isEnabled = false
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -64,6 +65,7 @@ class BookingActivity : AppCompatActivity() {
                 binding.tvDoctorRating.text = "⭐ ${doctor.rating}"
 
                 binding.tvDoctorHospital.text = "🏥 ${doctor.hospital}"
+                binding.btnConfirm.isEnabled = true
 
             }
 
@@ -153,13 +155,6 @@ class BookingActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG
                         ).show()
                         finish()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(
-                            this,
-                            "Booking Failed!",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                     .addOnFailureListener {
                         Toast.makeText(
