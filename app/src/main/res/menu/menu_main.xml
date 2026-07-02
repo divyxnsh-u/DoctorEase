@@ -10,6 +10,12 @@
         app:showAsAction="always|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
+    <item
+        android:id="@+id/action_my_appointments"
+        android:title="My Appointments"
+        android:icon="@android:drawable/ic_menu_agenda"
+        app:showAsAction="never"/>
+
 
     <item
         android:id="@+id/action_logout"

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.doctorbooking.data.Doctor
+import com.example.doctorbooking.model.Doctor
 import com.example.doctorbooking.R
 
 class DoctorAdapter(
@@ -32,7 +32,7 @@ class DoctorAdapter(
     override fun onBindViewHolder(holder: DoctorViewHolder, position: Int) {
         val doctor = filteredDoctors[position]
         holder.tvName.text = doctor.name
-        holder.ivDoctor.setImageResource(doctor.imageRes)
+        holder.ivDoctor.setImageResource(R.drawable.doctor_placeholder)
         holder.tvSpecialization.text = doctor.specialization
         holder.tvExperience.text = "${doctor.experience} years experience"
 
@@ -51,6 +51,10 @@ class DoctorAdapter(
                 it.specialization.lowercase().contains(lowerCaseQuery)
             }.toMutableList()
         }
+        notifyDataSetChanged()
+    }
+    fun updateDoctors(newDoctors: List<Doctor>) {
+        filteredDoctors = newDoctors.toMutableList()
         notifyDataSetChanged()
     }
 }

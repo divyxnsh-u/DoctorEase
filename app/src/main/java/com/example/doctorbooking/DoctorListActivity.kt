@@ -11,15 +11,40 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.doctorbooking.data.SampleData
+import com.example.doctorbooking.model.Doctor
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.auth.FirebaseAuth
+import com.example.doctorbooking.databinding.ActivityMainBinding
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+
 
 class DoctorListActivity : AppCompatActivity() {
     private lateinit var adapter: DoctorAdapter
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var db: FirebaseFirestore
+    private val doctorList = ArrayList<Doctor>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(
+                0,
+                systemBars.top,
+                0,
+                0
+            )
+
+            insets
+        }
+
+        db = FirebaseFirestore.getInstance()
 
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -28,14 +53,50 @@ class DoctorListActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        adapter = DoctorAdapter(SampleData.doctors) { doctor ->
-            val intent = Intent(this, BookingActivity::class.java)
-            intent.putExtra("doctorName", doctor.name)
-            intent.putExtra("specialization", doctor.specialization)
+
+
+        adapter = DoctorAdapter(doctorList) { doctor ->
+
+            val intent = Intent(this, DoctorDetailsActivity::class.java)
+            intent.putExtra("doctorId", doctor.id)
             startActivity(intent)
         }
-
         recyclerView.adapter = adapter
+
+        loadDoctors()
+    }
+
+    private fun loadDoctors() {
+
+        db.collection("doctors")
+            .orderBy("name")
+            .get()
+            .addOnSuccessListener { result ->
+
+                doctorList.clear()
+
+                for (document in result) {
+
+                    val doctor = document.toObject(Doctor::class.java)
+
+                    doctor.id = document.id
+
+                    doctorList.add(doctor)
+
+                }
+
+                adapter.updateDoctors(doctorList)
+
+            }
+            .addOnFailureListener {
+
+                Toast.makeText(
+                    this,
+                    "Failed to load doctors",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            }
     }
 
 
@@ -63,7 +124,14 @@ class DoctorListActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
         return when (item.itemId) {
+            R.id.action_my_appointments -> {
+                startActivity(
+                    Intent(this, MyAppointmentsActivity::class.java)
+                )
+                true
+            }
             R.id.action_logout -> {
                 showLogoutConfirmationDialog()
                 true
@@ -84,13 +152,19 @@ class DoctorListActivity : AppCompatActivity() {
 
 
     private fun logoutUser() {
-        val prefs = getSharedPreferences("DoctorAppPrefs", MODE_PRIVATE)
-        prefs.edit().putBoolean("isLoggedIn", false).apply()
 
-        Toast.makeText(this, "Logged out successfully!", Toast.LENGTH_SHORT).show()
+        FirebaseAuth.getInstance().signOut()
 
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        Toast.makeText(
+            this,
+            "Logged out successfully!",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        val intent = Intent(this, DoctorDetailsActivity::class.java)
+        intent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
         startActivity(intent)
         finish()
     }
