@@ -101,6 +101,15 @@ class BookingActivity : AppCompatActivity() {
             val name = binding.etPatientName.text.toString().trim()
             val phone = binding.etPatientPhone.text.toString().trim()
 
+            if (selectedDate.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    "Please select an appointment date",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
             if (selectedSlot.isEmpty()) {
                 Toast.makeText(
                     this,
@@ -109,6 +118,7 @@ class BookingActivity : AppCompatActivity() {
                 ).show()
                 return@setOnClickListener
             }
+
             if (name.isEmpty() || phone.isEmpty()) {
                 Toast.makeText(
                     this,
@@ -164,28 +174,6 @@ class BookingActivity : AppCompatActivity() {
                         ).show()
                     }
             }
-        }
-    }
-    private fun generateSlots() {
-        binding.layoutSlots.removeAllViews()
-        val slots = SlotGenerator.generateSlots(
-            doctor.startTime,
-            doctor.endTime,
-            doctor.slotDuration
-        )
-        for (slot in slots) {
-            val button = Button(this)
-            button.text = slot
-            button.setOnClickListener {
-                selectedSlot = slot
-
-                Toast.makeText(
-                    this,
-                    "Selected: $slot",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            binding.layoutSlots.addView(button)
         }
     }
     private fun loadBookedSlots(date: String) {
